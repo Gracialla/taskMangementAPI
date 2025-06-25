@@ -14,21 +14,9 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 
-app.use((req, res, next) => {
-  console.log('\n--- NEW REQUEST ---');
-  console.log('Method:', req.method);
-  console.log('Path:', req.url);
-  console.log('Headers:', req.headers);
-  console.log('Body:', req.body);
-  console.log('Files:', req.file || 'No files uploaded');
-  next();
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use('/uploads', express.static('uploads'));
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use("/api/users", userRoutes);
 
 
@@ -47,9 +35,9 @@ const testTransporter = nodemailer.createTransport({
 app.get("/test-email", async (req, res) => {
   try {
     await testTransporter.sendMail({
-      from: `"MyBuddy Support" <${process.env.EMAIL_FROM}>`,
+      from: `"Task Management Support" <${process.env.EMAIL_FROM}>`,
       to: "jimmymangara20@gmail.com",
-      subject: "Test Email from MyBuddy",
+      subject: "Test Email from Task Management",
       html: `<p>This is a test email from your Mailtrap SMTP setup</p>`,
     });
 
