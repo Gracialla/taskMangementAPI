@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.route.js";
+import taskRoutes from "./routes/task.route.js";
 
 import { sequelize } from "./config/db.config.js";
 import path from 'path';
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", userRoutes);
+app.use("/api/tasks", taskRoutes);
 
 
 

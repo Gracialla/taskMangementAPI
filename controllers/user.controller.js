@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import { Op } from "sequelize";
+import { sendEmail } from "../services/email.service.js";
 
 dotenv.config();
 
@@ -113,23 +114,14 @@ export const forgotPassword = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ where: { email } });
 
-  if (!user) return res.status(404).json({ error: "User not found" });
+  if (!user) return res.status(404).json({ error: "User  not found" });
 
   const token = crypto.randomBytes(32).toString("hex");
-  user.resetToken = token;
-  user.resetTokenExpires = Date.now() + 3600000;
-  await user.save();
+  user.resetToken = token; // Correctly assign the token
+  user.resetTokenExpires = Date.now() + 3600000; // Set expiration time
 
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_FROM,
-      pass: process.env.EMAIL_PASS,
-    },
-    tls:{
-      rejectUnauthorized: false,
-    }
-  });
+  // Update user with token
+  await user.save(); // Save the user with the new reset token and expiration
 
   const resetUrl = `${process.env.CLIENT_URL}/reset-password/${token}`;
 
@@ -142,6 +134,7 @@ export const forgotPassword = async (req, res) => {
 
   return res.json({ message: "Password reset email sent" });
 };
+
 
 export const resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;
@@ -163,10 +156,47 @@ export const resetPassword = async (req, res) => {
   return res.json({ message: "Password has been reset successfully" });
 };
 
+// export const userProfile = async (req, res) => {
+//   return res.status(200).json({
+//     status: true,
+//     message: "User profile retrieved successfully",
+//     data: req.user,
+//   });
+// };
+
+
 export const userProfile = async (req, res) => {
-  return res.status(200).json({
-    status: true,
-    message: "User profile retrieved successfully",
-    data: req.user,
-  });
+  try {
+    // Get user profile from database using the authenticated user's ID
+    const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ['password'] } // Exclude sensitive fields
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        status: false,
+        message: "User  not found",
+        data: null
+      });
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: "User  profile retrieved successfully",
+      data: user
+    });
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Error fetching user profile",
+      data: null
+    });
+  }
 };
+
+
+
+
+
+

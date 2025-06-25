@@ -9,7 +9,7 @@ router.post('/register', createUser);
 router.post('/login',loginUser);
 router.post('/forgot',forgotPassword);
 router.post('/reset',resetPassword);
-router.get("/profile", userProfile);
+router.get("/profile", protectedAction, userProfile);
 
 
 export default router;
