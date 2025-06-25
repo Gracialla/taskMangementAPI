@@ -31,14 +31,16 @@ A backend API for managing personal tasks, built with **Node.js**, **Express**, 
 
 ```bash
 git https://github.com/Gracialla/taskMangementAPI.git
+
+```
+```bash
 cd taskMangementAPI
 ```
-
 2. **Install dependencies**
 ```bash
 npm install
 ```
-3. **Create a `.env` file in the root directory and add your environment variables:
+3. **Create a `.env` file in the root directory and add your environment variables:**
 4. **Create a MySQL database and update the `config/database.js` file with your database credentials**
 5. **Run the migrations** to create the necessary tables in the database.
 6. **Start the server** with `npm start` or `nodemon` for development.
